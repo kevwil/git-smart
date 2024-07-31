@@ -4,12 +4,8 @@ GEM
     colorize (1.1.0)
     diff-lcs (1.5.1)
     docile (1.4.1)
-    mustache (1.1.1)
+    ffi (1.17.0-java)
     rake (13.2.1)
-    redcarpet (3.6.0)
-    rocco (0.8.2)
-      mustache
-      redcarpet
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -29,16 +25,18 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    spoon (0.0.6)
+      ffi
 
 PLATFORMS
-  ruby
+  universal-java-22
 
 DEPENDENCIES
   colorize
   rake
-  rocco
   rspec
   simplecov
+  spoon
 
 BUNDLED WITH
    2.5.16

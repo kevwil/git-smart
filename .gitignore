@@ -16,3 +16,6 @@ pkg
 
 # created gem
 *.gem
+
+# rbenv version metadata
+.ruby-version

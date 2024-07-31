@@ -34,14 +34,14 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-desc "Generate the rocco docs"
-task :rocco do
-  base_dir = File.dirname(__FILE__)
-  %x[cd #{base_dir}/lib/commands && rocco *.rb -o ../../docs]
-  %x[cd #{base_dir} && git add docs]
-end
+# desc "Generate the rocco docs"
+# task :rocco do
+#   base_dir = File.dirname(__FILE__)
+#   %x[cd #{base_dir}/lib/commands && rocco *.rb -o ../../docs]
+#   %x[cd #{base_dir} && git add docs]
+# end
 
-task :release => :rocco
+# task :release => :rocco
 
 desc "Generate a binary for each of our commands"
 task :generate_binaries do
