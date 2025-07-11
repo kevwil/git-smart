@@ -5,9 +5,7 @@ class GitSmart
       begin
         lambda.call(args)
       rescue GitSmart::Exception => e
-        if e.message && !e.message.empty?
-          puts e.message.red
-        end
+        puts e.message.red if e.message && !e.message.empty?
       end
     else
       puts "No command #{code.inspect} defined! Available commands are #{commands.keys.sort.inspect}"
@@ -18,7 +16,7 @@ class GitSmart
   # GitSmart.register 'my-command' do |repo, args|
   def self.register(code, &blk)
     commands[code] = lambda { |args|
-      ExecutionContext.new.instance_exec(GitRepo.new("."), args, &blk)
+      ExecutionContext.new.instance_exec(GitRepo.new('.'), args, &blk)
     }
   end
 

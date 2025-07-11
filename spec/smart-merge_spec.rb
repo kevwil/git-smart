@@ -1,9 +1,11 @@
-require File.dirname(__FILE__) + '/spec_helper'
+require "#{__dir__}/spec_helper"
 
 require 'fileutils'
 
 describe 'smart-merge' do
-  def local_dir;  WORKING_DIR + '/local';  end
+  def local_dir
+    "#{WORKING_DIR}/local"
+  end
 
   before :each do
     %x[
@@ -22,14 +24,14 @@ describe 'smart-merge' do
     ]
   end
 
-  it "should require an argument" do
+  it 'should require an argument' do
     out = run_command(local_dir, 'smart-merge')
-    out.should report("Usage: git smart-merge ref")
+    expect(out).to report('Usage: git smart-merge ref')
   end
 
-  it "should require a valid branch" do
+  it 'should require a valid branch' do
     out = run_command(local_dir, 'smart-merge', 'foo')
-    out.should report("Branch to merge 'foo' not recognised by git!")
+    expect(out).to report("Branch to merge 'foo' not recognised by git!")
   end
 
   it "should report nothing to do if the branch hasn't moved on" do
@@ -38,11 +40,11 @@ describe 'smart-merge' do
       git branch unmoved
     ]
     out = run_command(local_dir, 'smart-merge', 'unmoved')
-    out.should report("Branch 'unmoved' has no new commits. Nothing to merge in.")
-    out.should report("Already up-to-date.")
+    expect(out).to report("Branch 'unmoved' has no new commits. Nothing to merge in.")
+    expect(out).to report('Already up-to-date.')
   end
 
-  context "with local changes to newbranch" do
+  context 'with local changes to newbranch' do
     before :each do
       %x[
         cd #{local_dir}
@@ -52,39 +54,39 @@ describe 'smart-merge' do
           git add .
           git commit -m 'moar'
 
-          git checkout master 2> /dev/null
+          git checkout main 2> /dev/null
       ]
     end
 
-    it "should merge --no-ff, despite the branch being fast-forwardable" do
+    it 'should merge --no-ff, despite the branch being fast-forwardable' do
       out = run_command(local_dir, 'smart-merge', 'newbranch')
-      out.should report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
-      out.should report("* Branch 'master' has not moved on since 'newbranch' diverged. Running with --no-ff anyway, since a fast-forward is unexpected behaviour.")
-      out.should report("Executing: git merge --no-ff newbranch")
-      out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
-      out.should report(/All good\. Created merge commit [\w]{7}\./)
+      expect(out).to report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
+      expect(out).to report("* Branch 'main' has not moved on since 'newbranch' diverged. Running with --no-ff anyway, since a fast-forward is unexpected behaviour.")
+      expect(out).to report('Executing: git merge --no-ff newbranch')
+      expect(out).to report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
+      expect(out).to report(/All good\. Created merge commit \w{7}\./)
     end
 
-    context "and changes on master" do
+    context 'and changes on master' do
       before :each do
         %x[
           cd #{local_dir}
             echo "puts 'moar codes too!'" >> lib/codes.rb
             git add .
-            git commit -m 'changes on master'
+            git commit -m 'changes on main'
         ]
       end
 
-      it "should merge in ok" do
+      it 'should merge in ok' do
         out = run_command(local_dir, 'smart-merge', 'newbranch')
-        out.should report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
-        out.should report("Branch 'master' has 1 new commit since 'newbranch' diverged.")
-        out.should report("Executing: git merge --no-ff newbranch")
-        out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
-        out.should report(/All good\. Created merge commit [\w]{7}\./)
+        expect(out).to report("Branch 'newbranch' has diverged by 1 commit. Merging in.")
+        expect(out).to report("Branch 'main' has 1 new commit since 'newbranch' diverged.")
+        expect(out).to report('Executing: git merge --no-ff newbranch')
+        expect(out).to report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
+        expect(out).to report(/All good\. Created merge commit \w{7}\./)
       end
 
-      it "should stash then merge if working tree is dirty" do
+      it 'should stash then merge if working tree is dirty' do
         %x[
           cd #{local_dir}
             echo "i am nub" > noob
@@ -92,12 +94,12 @@ describe 'smart-merge' do
             git add noob
         ]
         out = run_command(local_dir, 'smart-merge', 'newbranch')
-        out.should report("Executing: git stash")
-        out.should report("Executing: git merge --no-ff newbranch")
-        out.should report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
-        out.should report("Reapplying local changes...")
-        out.should report("Executing: git stash pop")
-        out.should report(/All good\. Created merge commit [\w]{7}\./)
+        expect(out).to report('Executing: git stash')
+        expect(out).to report('Executing: git merge --no-ff newbranch')
+        expect(out).to report(/2 files changed, 2 insertions\(\+\)(, 0 deletions\(-\))?$/)
+        expect(out).to report('Reapplying local changes...')
+        expect(out).to report('Executing: git stash pop')
+        expect(out).to report(/All good\. Created merge commit \w{7}\./)
       end
     end
   end

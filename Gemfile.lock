@@ -4,6 +4,8 @@ GEM
     colorize (1.1.0)
     diff-lcs (1.5.1)
     docile (1.4.1)
+    drb (2.2.3)
+    ffi (1.17.0)
     ffi (1.17.0-java)
     rake (13.2.1)
     rspec (3.13.0)
@@ -19,6 +21,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.1)
+    ruby-debug-ide (0.7.5)
+      rake (>= 0.8.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -29,14 +33,17 @@ GEM
       ffi
 
 PLATFORMS
+  arm64-darwin-24
   universal-java-22
 
 DEPENDENCIES
   colorize
+  drb
   rake
   rspec
+  ruby-debug-ide
   simplecov
   spoon
 
 BUNDLED WITH
-   2.5.16
+   2.6.9

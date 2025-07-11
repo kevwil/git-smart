@@ -1,9 +1,9 @@
 require 'rspec'
 require 'tmpdir'
 
-require File.dirname(__FILE__) + '/../lib/git-smart'
+require File.expand_path("../lib/git-smart", __dir__)
 
-WORKING_DIR = File.dirname(__FILE__) + '/working'
+WORKING_DIR = "#{__dir__}/working".freeze
 
 RSpec.configure do |config|
   config.before :each do
@@ -27,10 +27,10 @@ def run_command(dir, command, *args)
 end
 
 RSpec::Matchers.define :report do |expected|
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     "expected to see #{expected.inspect}, got \n\n#{actual.map { |line| "  #{line}" }.join("\n")}"
   end
-  failure_message_for_should_not do |actual|
+  failure_message_when_negated do |actual|
     "expected not to see #{expected.inspect} in \n\n#{actual.map { |line| "  #{line}" }.join("\n")}"
   end
   match do |actual|
@@ -38,26 +38,26 @@ RSpec::Matchers.define :report do |expected|
   end
 end
 
-
 RSpec::Matchers.define :have_git_status do |expected|
-  failure_message_for_should do |dir|
+  failure_message do |dir|
     "expected '#{dir}' to have git status of #{expected.inspect}, got #{GitRepo.new(dir).status.inspect}"
   end
-  failure_message_for_should_not do |actual|
-    "expected '#{dir}' to not have git status of #{expected.inspect}, got #{GitRepo.new(dir).status.inspect}"
+  failure_message_when_negated do |actual|
+    "expected '#{actual}' to not have git status of #{expected.inspect}, got #{GitRepo.new(actual).status.inspect}"
   end
   match do |dir|
     GitRepo.new(dir).status == expected
   end
 end
 
-
 RSpec::Matchers.define :have_last_few_commits do |expected|
-  failure_message_for_should do |dir|
-    "expected '#{dir}' to have last few commits of #{expected.inspect}, got #{GitRepo.new(dir).last_commit_messages(expected.length).inspect}"
+  failure_message do |dir|
+    result = GitRepo.new(dir).last_commit_messages(expected.length).inspect
+    "expected '#{dir}' to have last few commits of #{expected.inspect}, got #{result}"
   end
-  failure_message_for_should_not do |actual|
-    "expected '#{dir}' to not have git status of #{expected.inspect}, got #{GitRepo.new(dir).last_commit_messages(expected.length).inspect}"
+  failure_message_when_negated do |actual|
+    result = GitRepo.new(actual).last_commit_messages(expected.length).inspect
+    "expected '#{actual}' to not have git status of #{expected.inspect}, got #{result}"
   end
   match do |dir|
     GitRepo.new(dir).last_commit_messages(expected.length) == expected

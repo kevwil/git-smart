@@ -6,15 +6,15 @@ require 'pathname'
 class GitRepo
   def initialize(dir)
     @dir = dir
-    unless File.directory?(git_dir)
-      raise GitSmart::RunFailed.new(
-        <<-MSG.gsub(/^\s+/, '')
-        You need to run this from within a Git directory.
-        Current working directory: #{File.expand_path(dir)}
-        Expected .git directory: #{git_dir}
-        MSG
-      )
-    end
+    return if File.directory?(git_dir)
+
+    raise GitSmart::RunFailed.new(
+      <<-MSG.gsub(/^\s+/, '')
+      You need to run this from within a Git directory.
+      Current working directory: #{File.expand_path(dir)}
+      Expected .git directory: #{git_dir}
+      MSG
+    )
   end
 
   def git_dir
@@ -35,7 +35,7 @@ class GitRepo
 
   def current_branch
     head_file = File.join(git_dir, 'HEAD')
-    File.read(head_file).strip.sub(%r(^.*refs/heads/), '')
+    File.read(head_file).strip.sub(%r{^.*refs/heads/}, '')
   end
 
   def sha(ref)
@@ -52,10 +52,10 @@ class GitRepo
     value = config(key)
     if value.nil?
       value
-    elsif value =~ /^refs\/heads\/(.*)$/
-      $1
+    elsif value =~ %r{^refs/heads/(.*)$} # /^refs\/heads\/(.*)$/
+      ::Regexp.last_match(1)
     else
-      raise GitSmart::UnexpectedOutput.new("Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'")
+      raise GitSmart::UnexpectedOutput, "Expected the config of '#{key}' to be /refs/heads/branchname, got '#{value}'"
     end
   end
 
@@ -81,25 +81,25 @@ class GitRepo
   end
 
   def status
-    raw_status.
-      split("\n").
-      map { |l| l.split(" ") }.
-      group_by(&:first).
-      map_values { |lines| lines.map(&:last) }.
-      map_keys { |status|
+    raw_status
+      .split("\n")
+      .map { |l| l.split(' ') }
+      .group_by(&:first)
+      .map_values { |lines| lines.map(&:last) }
+      .map_keys { |status|
         case status
-          when /^[^ ]*M/; :modified
-          when /^[^ ]*A/; :added
-          when /^[^ ]*D/; :deleted
-          when /^[^ ]*\?\?/; :untracked
-          when /^[^ ]*UU/; :conflicted
-          else raise GitSmart::UnexpectedOutput.new("Expected the output of git status to only have lines starting with A, M, D, UU, or ??. Got: \n#{raw_status}")
+        when /^[^ ]*M/ then :modified
+        when /^[^ ]*A/ then :added
+        when /^[^ ]*D/ then :deleted
+        when /^[^ ]*\?\?/ then :untracked
+        when /^[^ ]*UU/ then :conflicted
+        else raise GitSmart::UnexpectedOutput, "Expected the output of git status to only have lines starting with A, M, D, UU, or ??. Got: \n#{raw_status}"
         end
       }
   end
 
   def dirty?
-    status.any? { |k,v| k != :untracked && v.any? }
+    status.any? { |k, v| k != :untracked && v.any? }
   end
 
   def fast_forward!(upstream)
@@ -119,7 +119,7 @@ class GitRepo
   end
 
   def read_log(nr)
-    git('log', '--oneline', '-n', nr.to_s).split("\n").map { |l| l.split(" ",2) }
+    git('log', '--oneline', '-n', nr.to_s).split("\n").map { |l| l.split(' ', 2) }
   end
 
   def last_commit_messages(nr)
@@ -142,7 +142,7 @@ class GitRepo
   end
 
   def git!(*args)
-    puts "Executing: #{['git', *args].join(" ")}"
+    puts "Executing: #{['git', *args].join(' ')}"
     output = exec_git(*args)
     to_display = output.split("\n").map { |l| "  #{l}" }.join("\n")
     $?.success? ? puts(to_display) : raise(GitSmart::UnexpectedOutput.new(to_display))
@@ -150,10 +150,10 @@ class GitRepo
   end
 
   def git_shell(*args)
-    puts "Executing: #{['git', *args].join(" ")}"
-    Dir.chdir(@dir) {
+    puts "Executing: #{['git', *args].join(' ')}"
+    Dir.chdir(@dir) do
       system('git', *args)
-    }
+    end
   end
 
   def config(name)
@@ -165,8 +165,9 @@ class GitRepo
 
   def exec_git(*args)
     return if @dir.empty?
-    Dir.chdir(@dir) {
+
+    Dir.chdir(@dir) do
       SafeShell.execute('git', *args)
-    }
+    end
   end
 end
