@@ -1,5 +1,5 @@
 require "#{__dir__}/spec_helper"
-
+require 'tmpdir'
 require 'fileutils'
 
 describe 'smart-pull' do

@@ -20,8 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'colorize', '~> 1.1', '>= 1.1.0'
   s.add_runtime_dependency 'spoon', '~> 0.0', '>= 0.0.6'
 
-  # s.add_development_dependency "rocco", "~> 0.8", ">= 0.8.2"
-  s.add_development_dependency 'rspec', '~> 3.13', '>= 3.13.0'
+  s.add_development_dependency 'rspec', '~> 3.13', '>= 3.13.1'
   s.add_development_dependency 'simplecov', '~> 0.22', '>= 0.22.0'
 
   s.required_ruby_version = '>= 2.7.0'

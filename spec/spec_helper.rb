@@ -1,11 +1,16 @@
 require 'rspec'
-require 'tmpdir'
 
-require File.expand_path("../lib/git-smart", __dir__)
+require 'simplecov'
+SimpleCov.start
+
+require File.expand_path('../lib/git-smart', __dir__)
 
 WORKING_DIR = "#{__dir__}/working".freeze
 
 RSpec.configure do |config|
+  # Enable flags like --only-failures and --next-failure
+  config.example_status_persistence_file_path = '.rspec_status'
+
   config.before :each do
     FileUtils.rm_rf WORKING_DIR
     FileUtils.mkdir_p WORKING_DIR

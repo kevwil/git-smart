@@ -19,10 +19,11 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'colorize', '~> 1.1', '>= 1.1.0'
 
-  s.add_development_dependency 'rocco', '~> 0.8', '>= 0.8.2'
-  s.add_development_dependency 'rspec', '~> 3.13', '>= 3.13.0'
+  s.add_development_dependency 'rspec', '~> 3.13', '>= 3.13.1'
+  s.add_development_dependency 'drb', '~> 2.2', '>= 2.2.3'
   s.add_development_dependency 'ruby-debug-ide', '~> 0.7', '>= 0.7.5'
   s.add_development_dependency 'simplecov', '~> 0.22', '>= 0.22.0'
+  s.add_development_dependency 'rubocop', '~> 1.79', '>= 1.79.2'
 
   s.required_ruby_version = '>= 2.7.0'
 end

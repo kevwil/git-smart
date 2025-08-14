@@ -1,5 +1,5 @@
-# rcov generated
-coverage
+# simplecov generated
+coverage/
 
 # rdoc generated
 rdoc
@@ -22,3 +22,8 @@ pkg
 
 # bundler
 vendor/
+
+# testing
+spec/working/
+spec/local/
+.rspec_status
