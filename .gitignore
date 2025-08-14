@@ -1,5 +1,5 @@
-# rcov generated
-coverage
+# simplecov generated
+coverage/
 
 # rdoc generated
 rdoc
@@ -19,3 +19,11 @@ pkg
 
 # rbenv version metadata
 .ruby-version
+
+# bundler
+vendor/
+
+# testing
+spec/working/
+spec/local/
+.rspec_status

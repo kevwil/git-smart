@@ -4,8 +4,10 @@ gem 'colorize'
 gem 'spoon', platforms: :jruby
 
 group :development do
+  gem 'rake'
   gem 'rspec'
   gem 'simplecov'
-  # gem 'rocco'
-  gem 'rake'
+  gem 'rubocop'
+  gem 'drb', platform: :ruby
+  gem 'ruby-debug-ide', platform: :ruby
 end
